@@ -131,7 +131,7 @@ class _HomePageState extends State<HomePage> {
               decoration: InputDecoration(
                 hintText: 'Search friends...',
                 filled: true,
-                fillColor: Colors.white,
+                fillColor: Color.fromRGBO(245, 198, 82, 1.0),
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
               ),
               onChanged: _searchFriends,

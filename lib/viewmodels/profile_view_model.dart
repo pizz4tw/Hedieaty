@@ -8,7 +8,7 @@ class ProfileViewModel extends ChangeNotifier {
 
   String? name;
   String? email;
-  String? profilePicture; // Can be a network URL or asset path
+  String? profilePicture;
   bool notificationsEnabled = false;
   List<Map<String, dynamic>> createdEvents = [];
 
@@ -22,9 +22,9 @@ class ProfileViewModel extends ChangeNotifier {
         if (userDoc.exists) {
           name = userDoc['username'];
           email = userDoc['email'];
-          profilePicture = userDoc['profilePicture']; // You can store a URL here
+          profilePicture = userDoc['profilePicture'];
           createdEvents = List<Map<String, dynamic>>.from(userDoc['events']);
-          notifyListeners(); // Notifies the UI of the data change
+          notifyListeners();
         }
       }
     } catch (e) {
@@ -41,7 +41,6 @@ class ProfileViewModel extends ChangeNotifier {
     try {
       final user = _auth.currentUser;
       if (user != null) {
-        // Update Firestore data
         await _firestore.collection("users").doc(user.uid).update({
           'username': updatedName,
           'profilePicture': updatedProfilePicture,
@@ -55,6 +54,21 @@ class ProfileViewModel extends ChangeNotifier {
       }
     } catch (e) {
       print("Error updating personal information: $e");
+    }
+  }
+
+  Future<void> deleteAccount() async {
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        // Delete data from Firestore
+        await _firestore.collection("users").doc(user.uid).delete();
+
+        // Delete authentication data (i.e., the user)
+        await user.delete();
+      }
+    } catch (e) {
+      print("Error deleting account: $e");
     }
   }
 }

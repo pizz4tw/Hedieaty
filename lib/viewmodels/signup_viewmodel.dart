@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../views/home_page.dart';
-import '../models/PigeonUserDetails.dart';
 
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -43,15 +42,10 @@ class SignUpViewModel extends ChangeNotifier {
       print("Starting sign-up process...");
 
       // Firebase Authentication
-      print("Creating user with email: $email");
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      print("User created successfully with UID: ${userCredential.user!.uid}");
-
-      // Store additional user details in Firestore
-      print("Saving additional user details to Firestore...");
 
       // Prepare user data
       Map<String, dynamic> userData = {
@@ -60,49 +54,19 @@ class SignUpViewModel extends ChangeNotifier {
         'dob': dob?.toIso8601String(),
         'gender': gender,
         'phoneNumber': phoneNumber,
+        'profilePicture': null, // Ensure no profile image is set on first sign-up
       };
-
-      // Log data before attempting to save
-      print("User data to save in Firestore: $userData");
 
       // Save to Firestore under the users collection
       await _firestore.collection("users").doc(userCredential.user!.uid).set(userData)
           .then((_) {
-        print("User details saved successfully in Firestore.");
-      }).catchError((error) {
-        print("Error saving user details in Firestore: $error");
-        return error.toString(); // Return Firestore error
+        print("User data saved to Firestore");
       });
 
-      // **Do not attempt to cast the data as a custom object** here, just print the data directly.
-      try {
-        final snapshot = await _firestore.collection("users").doc(userCredential.user!.uid).get();
-        if (snapshot.exists) {
-          var data = snapshot.data();
-          print('Fetched data from Firestore: $data');
-          // Debugging: Print the type of data to ensure it's correct
-          print('Fetched data type: ${data?.runtimeType}');
-
-          // Attempt to map Firestore data to your custom model
-          var userDetails = PigeonUserDetails.fromMap(data);  // Map to custom model
-          print('Mapped user details: $userDetails');
-        } else {
-          print("No user details found in Firestore.");
-        }
-      } catch (e) {
-        print("Error fetching user details from Firestore: $e");
-      }
-
-      // Navigate to HomePage() after successful sign-up
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomePage()),
-      );
-
-      return null; // Sign-up successful
+      return null;
     } catch (e) {
-      print("Sign up failed with error: $e");
-      return e.toString(); // Return the error message
+      print("Error during sign-up: $e");
+      return 'Sign-up failed. Please try again.';
     }
   }
 }

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:hedeyety/viewmodels/profile_view_model.dart';
 import 'update_info_page.dart';
-import 'home_page.dart'; // Import HomePage for navigation
+import 'home_page.dart';
+import 'login.dart'; // Import your login page here
 
 class ProfilePage extends StatelessWidget {
   @override
@@ -10,10 +11,10 @@ class ProfilePage extends StatelessWidget {
     final profileViewModel = Provider.of<ProfileViewModel>(context);
 
     return Scaffold(
-      backgroundColor: Color.fromRGBO(134, 86, 210, 1.0), // Set background color
+      backgroundColor: Color.fromRGBO(134, 86, 210, 1.0),
       appBar: AppBar(
         title: Text('Profile'),
-        backgroundColor: Color.fromRGBO(134, 86, 210, 1.0), // Match AppBar color
+        backgroundColor: Color.fromRGBO(134, 86, 210, 1.0),
       ),
       drawer: Drawer(
         child: ListView(
@@ -96,7 +97,7 @@ class ProfilePage extends StatelessWidget {
                       child: profileViewModel.profilePicture == null
                           ? Icon(Icons.person, size: 50, color: Colors.white)
                           : null,
-                      backgroundColor: Color.fromRGBO(245, 198, 82, 1.0), // Secondary color
+                      backgroundColor: Color.fromRGBO(245, 198, 82, 1.0),
                     ),
                   ),
                   SizedBox(height: 16),
@@ -121,9 +122,9 @@ class ProfilePage extends StatelessWidget {
                   ),
                   SizedBox(height: 16),
                   ListTile(
-                    tileColor: Color.fromRGBO(245, 198, 82, 1.0), // Match color
+                    tileColor: Color.fromRGBO(245, 198, 82, 1.0),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0), // Rounded edges
+                      borderRadius: BorderRadius.circular(30.0),
                     ),
                     leading: Icon(Icons.edit, color: Colors.black),
                     title: Text(
@@ -140,9 +141,9 @@ class ProfilePage extends StatelessWidget {
                   ),
                   SizedBox(height: 16),
                   ListTile(
-                    tileColor: Color.fromRGBO(245, 198, 82, 1.0), // Match color
+                    tileColor: Color.fromRGBO(245, 198, 82, 1.0),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0), // Rounded edges
+                      borderRadius: BorderRadius.circular(30.0),
                     ),
                     leading: Icon(Icons.notifications, color: Colors.black),
                     title: Text(
@@ -153,6 +154,55 @@ class ProfilePage extends StatelessWidget {
                       value: profileViewModel.notificationsEnabled,
                       onChanged: profileViewModel.toggleNotifications,
                       activeColor: Color.fromRGBO(134, 86, 210, 1.0),
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  GestureDetector(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('Delete Account'),
+                            content: Text(
+                                'Are you sure you want to delete your account? This action is irreversible.'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () async {
+                                  await profileViewModel.deleteAccount();
+                                  Navigator.of(context).pop();
+                                  // Navigate to the login page after account deletion
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => LoginScreen()),
+                                  );
+                                },
+                                child: Text('Delete', style: TextStyle(color: Colors.red)),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                    child: Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(vertical: 14),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: Text(
+                        'Delete Account',
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      ),
                     ),
                   ),
                 ],
