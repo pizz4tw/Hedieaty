@@ -63,6 +63,6 @@ class AuthMethod {
 
   // for sighout
   signOut() async {
-    // await _auth.signOut();
+     await _auth.signOut();
   }
 }

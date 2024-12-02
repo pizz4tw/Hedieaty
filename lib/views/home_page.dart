@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'events_page.dart';
+import 'profile_page.dart';
+import '../services/authentication.dart'; // Import AuthMethod
 
 class HomePage extends StatefulWidget {
   @override
@@ -7,18 +9,17 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final AuthMethod _authMethod = AuthMethod(); // Create an instance of AuthMethod
+
   List<Map<String, dynamic>> friends = [
     {'name': 'John Doe', 'profilePicture': 'assets/john.jpg', 'upcomingEvents': 1},
     {'name': 'Jane Smith', 'profilePicture': 'assets/jane.jpg', 'upcomingEvents': 0},
     {'name': 'Emily Clark', 'profilePicture': 'assets/emily.jpg', 'upcomingEvents': 3},
   ];
 
-  void _addFriend() {
-  }
+  void _addFriend() {}
 
-  void _searchFriends(String query) {
-
-  }
+  void _searchFriends(String query) {}
 
   void _navigateToGiftList(String friendName) {
     Navigator.push(
@@ -35,10 +36,19 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _navigateToProfile() {
-
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ProfilePage()),
+    );
   }
 
-  void _navigateToSettings() {
+  void _navigateToSettings() {}
+
+  // Sign out function
+  void _signOut() async {
+    await _authMethod.signOut(); // Call the sign-out method from AuthMethod
+    print('User signed out');
+    Navigator.pushReplacementNamed(context, '/login'); // Navigate to login page
   }
 
   @override
@@ -103,6 +113,12 @@ class _HomePageState extends State<HomePage> {
                 _navigateToSettings();
               },
             ),
+            // Sign Out Button
+            ListTile(
+              leading: Icon(Icons.exit_to_app, color: Colors.black),
+              title: Text('Sign Out'),
+              onTap: _signOut, // Call the sign-out method
+            ),
           ],
         ),
       ),
@@ -121,13 +137,10 @@ class _HomePageState extends State<HomePage> {
               onChanged: _searchFriends,
             ),
           ),
-
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10.0),
             child: ElevatedButton(
-              onPressed: () {
-
-              },
+              onPressed: () {},
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color.fromRGBO(245, 198, 82, 1.0),
                 padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
@@ -178,7 +191,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
 
 class GiftListPage extends StatelessWidget {
   final String friendName;

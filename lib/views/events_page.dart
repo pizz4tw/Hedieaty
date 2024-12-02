@@ -1,68 +1,73 @@
 import 'package:flutter/material.dart';
+import 'home_page.dart';
+import 'profile_page.dart';// Assuming you want to navigate to home from here.
 
-class EventsPage extends StatefulWidget {
-  @override
-  _EventsPageState createState() => _EventsPageState();
-}
-
-class _EventsPageState extends State<EventsPage> {
-  List<Map<String, dynamic>> events = [
-    {'name': 'Birthday Party', 'category': 'Celebration', 'status': 'Upcoming'},
-    {'name': 'Meeting', 'category': 'Work', 'status': 'Current'},
-    {'name': 'Anniversary', 'category': 'Celebration', 'status': 'Past'},
-  ];
-
-  void _addEvent() {
-
-  }
-
-  void _editEvent(int index) {
-  }
-
-  void _deleteEvent(int index) {
-    setState(() {
-      events.removeAt(index);
-    });
-  }
-
+class EventsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Events'),
+        backgroundColor: Color.fromRGBO(134, 86, 210, 1.0),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: events.length,
-              itemBuilder: (context, index) {
-                final event = events[index];
-                return ListTile(
-                  title: Text(event['name']),
-                  subtitle: Text('${event['category']} - ${event['status']}'),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.edit),
-                        onPressed: () => _editEvent(index),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.delete),
-                        onPressed: () => _deleteEvent(index),
-                      ),
-                    ],
-                  ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(134, 86, 210, 1.0),
+              ),
+              child: Text(
+                'Menu',
+                style: TextStyle(
+                  color: Color.fromRGBO(245, 198, 82, 1.0),
+                  fontSize: 24,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.home, color: Colors.black),
+              title: Text('Home'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomePage()),
                 );
               },
             ),
-          ),
-          ElevatedButton(
-            onPressed: _addEvent,
-            child: Text('Add Event'),
-          ),
-        ],
+            ListTile(
+              leading: Icon(Icons.event, color: Colors.black),
+              title: Text('Events'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.person, color: Colors.black),
+              title: Text('Profile'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProfilePage()),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.settings, color: Colors.black),
+              title: Text('Settings'),
+              onTap: () {
+                Navigator.pop(context);
+                // Navigate to settings screen (if you have one)
+              },
+            ),
+          ],
+        ),
+      ),
+      body: Center(
+        child: Text('Events content goes here.'),
       ),
     );
   }
