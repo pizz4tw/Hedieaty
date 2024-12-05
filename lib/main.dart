@@ -26,6 +26,8 @@ void main() async {
 }
 
 class HedieatyApp extends StatelessWidget {
+  const HedieatyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

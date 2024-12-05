@@ -6,6 +6,8 @@ class UpdateInfoPage extends StatelessWidget {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _profilePictureController = TextEditingController();
 
+  UpdateInfoPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     final profileViewModel = Provider.of<ProfileViewModel>(context);
@@ -59,7 +61,6 @@ class UpdateInfoPage extends StatelessWidget {
                 // Navigate back
                 Navigator.pop(context);
               },
-              child: Text('Update'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color.fromRGBO(245, 198, 82, 1.0), // Button color
                 foregroundColor: Colors.black, // Text color
@@ -68,6 +69,7 @@ class UpdateInfoPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(30.0), // Rounded button
                 ),
               ),
+              child: Text('Update'),
             ),
           ],
         ),

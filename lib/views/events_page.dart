@@ -3,6 +3,8 @@ import 'home_page.dart';
 import 'profile_page.dart';// Assuming you want to navigate to home from here.
 
 class EventsPage extends StatelessWidget {
+  const EventsPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

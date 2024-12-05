@@ -6,6 +6,8 @@ import 'sign_up_page.dart';
 import '../viewmodels/login_model.dart';// Ensure you import the SignUpScreen
 
 class LoginScreen extends StatelessWidget {
+  const LoginScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -15,6 +17,7 @@ class LoginScreen extends StatelessWidget {
         appBar: AppBar(
           title: Text('Login'),
           backgroundColor: Color.fromRGBO(134, 86, 210, 1.0),
+          automaticallyImplyLeading: false,
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),

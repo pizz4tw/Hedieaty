@@ -6,6 +6,8 @@ import 'home_page.dart';
 import 'login.dart'; // Import your login page here
 
 class ProfilePage extends StatelessWidget {
+  const ProfilePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     final profileViewModel = Provider.of<ProfileViewModel>(context);
@@ -94,10 +96,10 @@ class ProfilePage extends StatelessWidget {
                       backgroundImage: profileViewModel.profilePicture != null
                           ? NetworkImage(profileViewModel.profilePicture!)
                           : null,
+                      backgroundColor: Color.fromRGBO(245, 198, 82, 1.0),
                       child: profileViewModel.profilePicture == null
                           ? Icon(Icons.person, size: 50, color: Colors.white)
                           : null,
-                      backgroundColor: Color.fromRGBO(245, 198, 82, 1.0),
                     ),
                   ),
                   SizedBox(height: 16),

@@ -3,6 +3,8 @@ import 'views/sign_up_page.dart';
 import 'views/login.dart';  // Make sure to import the LoginScreen
 
 class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
+
   @override
   _MainScreenState createState() => _MainScreenState();
 }
