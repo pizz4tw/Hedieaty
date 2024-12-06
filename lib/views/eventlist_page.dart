@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import '../viewmodels/giftlist_viewmodel.dart';
+import '../viewmodels/eventlist_viewmodel.dart';
 
-class GiftListPage extends StatefulWidget {
-  const GiftListPage({super.key});
+class EventListPage extends StatefulWidget {
+  const EventListPage({super.key});
 
   @override
-  _GiftListPageState createState() => _GiftListPageState();
+  _EventListPageState createState() => _EventListPageState();
 }
 
-class _GiftListPageState extends State<GiftListPage> {
-  late GiftListViewModel _viewModel;
+class _EventListPageState extends State<EventListPage> {
+  late EventListViewModel _viewModel;
 
   @override
   void initState() {
     super.initState();
-    _viewModel = GiftListViewModel();
+    _viewModel = EventListViewModel();
     _viewModel.initialize();
   }
 
@@ -22,7 +22,7 @@ class _GiftListPageState extends State<GiftListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create Gift List'),
+        title: const Text('Create Event List'),
         backgroundColor: const Color.fromRGBO(134, 86, 210, 1.0),
       ),
       body: Column(
@@ -31,17 +31,17 @@ class _GiftListPageState extends State<GiftListPage> {
             padding: const EdgeInsets.all(16.0),
             child: TextField(
               decoration: const InputDecoration(
-                hintText: 'Enter Gift List Name',
+                hintText: 'Enter Event List Name',
               ),
-              onChanged: _viewModel.updateGiftListName,
+              onChanged: _viewModel.updateEventListName,
             ),
           ),
           ElevatedButton(
-            onPressed: _viewModel.saveGiftList,
+            onPressed: _viewModel.saveEventList,
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color.fromRGBO(245, 198, 82, 1.0),
             ),
-            child: const Text('Save Gift List'),
+            child: const Text('Save Event List'),
           ),
         ],
       ),

@@ -40,8 +40,36 @@ class SignUpViewModel extends ChangeNotifier {
     try {
       print("Starting sign-up process...");
 
+      // Check for existing email
+      QuerySnapshot emailSnapshot = await _firestore
+          .collection("users")
+          .where("email", isEqualTo: email)
+          .get();
+      if (emailSnapshot.docs.isNotEmpty) {
+        return "Email is already registered. Please use a different email.";
+      }
+
+      // Check for existing username
+      QuerySnapshot usernameSnapshot = await _firestore
+          .collection("users")
+          .where("username", isEqualTo: username)
+          .get();
+      if (usernameSnapshot.docs.isNotEmpty) {
+        return "Username is already taken. Please choose a different username.";
+      }
+
+      // Check for existing phone number
+      QuerySnapshot phoneSnapshot = await _firestore
+          .collection("users")
+          .where("phoneNumber", isEqualTo: phoneNumber)
+          .get();
+      if (phoneSnapshot.docs.isNotEmpty) {
+        return "Phone number is already registered. Please use a different number.";
+      }
+
       // Firebase Authentication
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+      UserCredential userCredential = await _auth
+          .createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -53,16 +81,18 @@ class SignUpViewModel extends ChangeNotifier {
         'dob': dob?.toIso8601String(),
         'gender': gender,
         'phoneNumber': phoneNumber,
-        'profilePicture': null, // Ensure no profile image is set on first sign-up
+        'profilePicture': null,
+        // Ensure no profile image is set on first sign-up
       };
 
       // Save to Firestore under the users collection
-      await _firestore.collection("users").doc(userCredential.user!.uid).set(userData)
+      await _firestore.collection("users").doc(userCredential.user!.uid).set(
+          userData)
           .then((_) {
         print("User data saved to Firestore");
       });
 
-      return null;
+      return null; // Sign-up successful
     } catch (e) {
       print("Error during sign-up: $e");
       return 'Sign-up failed. Please try again.';

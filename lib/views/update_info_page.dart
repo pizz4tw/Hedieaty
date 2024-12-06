@@ -56,21 +56,22 @@ class UpdateInfoPage extends StatelessWidget {
                 _profilePictureController.text.trim();
 
                 await profileViewModel.updatePersonalInfo(
-                    updatedName, updatedProfilePicture);
+                    updatedName, updatedProfilePicture, context);
 
-                // Navigate back
+                // Navigate back if successful
                 Navigator.pop(context);
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromRGBO(245, 198, 82, 1.0), // Button color
-                foregroundColor: Colors.black, // Text color
+                backgroundColor: Color.fromRGBO(245, 198, 82, 1.0),
+                foregroundColor: Colors.black,
                 padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30.0), // Rounded button
+                  borderRadius: BorderRadius.circular(30.0),
                 ),
               ),
               child: Text('Update'),
-            ),
+            )
+            ,
           ],
         ),
       ),
