@@ -25,22 +25,27 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromRGBO(134, 86, 210, 1.0),
-      appBar: AppBar(
-        title: const Text('Home'),
-        backgroundColor: const Color.fromRGBO(134, 86, 210, 1.0),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: _viewModel.addFriend,
-            tooltip: 'Add Friend',
-          ),
-          IconButton(
-            icon: const Icon(Icons.contacts),
-            onPressed: _viewModel.addFriendFromContacts,
-            tooltip: 'Add from Contacts',
-          ),
-        ],
-      ),
+        appBar: AppBar(
+          title: const Text('Home'),
+          backgroundColor: const Color.fromRGBO(134, 86, 210, 1.0),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.refresh),
+              onPressed: _viewModel.refreshFriendsList,
+              tooltip: 'Refresh Friends',
+            ),
+            IconButton(
+              icon: const Icon(Icons.add),
+              onPressed: _viewModel.addFriend,
+              tooltip: 'Add Friend',
+            ),
+            IconButton(
+              icon: const Icon(Icons.contacts),
+              onPressed: _viewModel.addFriendFromContacts,
+              tooltip: 'Add from Contacts',
+            ),
+          ],
+        ),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -156,7 +161,7 @@ class _HomePageState extends State<HomePage> {
           )
           ,
           Expanded(
-            child: StreamBuilder<List<Map<String, dynamic>>>(
+            child: StreamBuilder<List<Map<String, dynamic>>>( // Now we have detailed friend data
               stream: _viewModel.friendsStream,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -169,19 +174,19 @@ class _HomePageState extends State<HomePage> {
                     final friend = friends[index];
                     return ListTile(
                       leading: CircleAvatar(
-                        backgroundImage: NetworkImage(friend['profilePicture']),
+                        backgroundImage: NetworkImage(friend['profilePicture'] ?? ''),
                       ),
                       title: Text(
-                        friend['name'],
+                        friend['username'] ?? 'Unknown', // Display username or 'Unknown' if not found
                         style: const TextStyle(color: Colors.white, fontSize: 18),
                       ),
                       subtitle: Text(
-                        friend['upcomingEvents'] > 0
+                        friend['upcomingEvents'] != null && friend['upcomingEvents'] > 0
                             ? 'Upcoming Events: ${friend['upcomingEvents']}'
                             : 'No Upcoming Events',
                         style: const TextStyle(color: Colors.white70),
                       ),
-                      trailing: friend['upcomingEvents'] > 0
+                      trailing: friend['upcomingEvents'] != null && friend['upcomingEvents'] > 0
                           ? Container(
                         padding: const EdgeInsets.all(6.0),
                         decoration: const BoxDecoration(
@@ -197,7 +202,6 @@ class _HomePageState extends State<HomePage> {
                         icon: const Icon(Icons.delete, color: Colors.red),
                         onPressed: () => _viewModel.deleteFriend(friend),
                       ),
-                      //onTap: () => _viewModel.navigateToGiftList(friend['name']),
                     );
                   },
                 );

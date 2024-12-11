@@ -50,13 +50,13 @@ class SignUpViewModel extends ChangeNotifier {
       }
 
       // Check for existing username
-      QuerySnapshot usernameSnapshot = await _firestore
-          .collection("users")
-          .where("username", isEqualTo: username)
-          .get();
-      if (usernameSnapshot.docs.isNotEmpty) {
-        return "Username is already taken. Please choose a different username.";
-      }
+      // QuerySnapshot usernameSnapshot = await _firestore
+      //     .collection("users")
+      //     .where("username", isEqualTo: username)
+      //     .get();
+      // if (usernameSnapshot.docs.isNotEmpty) {
+      //   return "Username is already taken. Please choose a different username.";
+      // }
 
       // Check for existing phone number
       QuerySnapshot phoneSnapshot = await _firestore

@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../services/authentication.dart';
-import '../views/giftlist_page.dart';
 import '../views/events_page.dart';
 import '../views/profile_page.dart';
 
@@ -22,12 +21,35 @@ class HomePageViewModel {
   }
 
   void _fetchFriendsStream() {
+    final currentUserId = _authMethod.getUserId();
+
+    // Query 'friends' collection to get all friends of the current user
     friendsStream = FirebaseFirestore.instance
-        .collection('users')
-        .doc(_authMethod.getUserId())
         .collection('friends')
+        .where('userId', isEqualTo: currentUserId)
         .snapshots()
-        .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
+        .asyncMap((snapshot) async {
+      // For each friendId in the 'friends' collection, fetch their data from 'users' collection
+      final friendIds = snapshot.docs.map((doc) => doc['friendId']).toList();
+      final friendData = await _fetchUserDetails(List<String>.from(friendIds));
+      return friendData;
+    });
+  }
+
+  Future<List<Map<String, dynamic>>> _fetchUserDetails(List<String> friendIds) async {
+    final usersCollection = FirebaseFirestore.instance.collection('users');
+    final userDocs = await usersCollection
+        .where(FieldPath.documentId, whereIn: friendIds)
+        .get();
+
+    return userDocs.docs.map((doc) => doc.data()).toList();
+  }
+
+  Future<void> refreshFriendsList() async {
+    _fetchFriendsStream(); // Re-fetch the friends' stream to ensure updates are captured.
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Friend list refreshed successfully.')),
+    );
   }
 
   Future<void> _getCurrentUserPhone() async {
@@ -37,6 +59,8 @@ class HomePageViewModel {
       currentUserPhone = docSnapshot.data()?['phoneNumber'] ?? '';
     }
   }
+
+
 
   String _normalizePhoneNumber(String phoneNumber) {
     phoneNumber = phoneNumber.trim();
@@ -63,10 +87,14 @@ class HomePageViewModel {
         .get();
 
     if (querySnapshot.docs.isNotEmpty) {
-      return querySnapshot.docs.first.data();
+      // You can fetch the 'uid' from the document reference
+      Map<String, dynamic> userData = querySnapshot.docs.first.data();
+      userData['uid'] = querySnapshot.docs.first.id;  // This is where the UID is added to the data
+      return userData;
     }
     return null;
   }
+
 
   void addFriend() async {
     TextEditingController phoneController = TextEditingController();
@@ -116,9 +144,13 @@ class HomePageViewModel {
   }
 
   Future<void> _confirmAddFriend(Map<String, dynamic> user) async {
-    final currentUser = FirebaseFirestore.instance.collection('users').doc(_authMethod.getUserId());
-    final querySnapshot = await currentUser.collection('friends')
-        .where('phoneNumber', isEqualTo: user['phoneNumber'])
+    final currentUserId = _authMethod.getUserId();
+
+    // Check if the friend already exists by userId (uid)
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('friends')
+        .where('userId', isEqualTo: currentUserId)
+        .where('friendId', isEqualTo: user['uid'])  // Use uid to check if the friend is already added
         .get();
 
     if (querySnapshot.docs.isNotEmpty) {
@@ -152,7 +184,7 @@ class HomePageViewModel {
             TextButton(
               child: Text('Add'),
               onPressed: () async {
-                await _addFriendToFirestore(user);
+                await _addFriendToFirestore(user);  // Store friend by userId (uid)
                 Navigator.pop(context);
               },
             ),
@@ -164,17 +196,18 @@ class HomePageViewModel {
 
   Future<void> _addFriendToFirestore(Map<String, dynamic> user) async {
     try {
-      final currentUser = FirebaseFirestore.instance.collection('users').doc(_authMethod.getUserId());
-      await currentUser.collection('friends').doc(user['phoneNumber']).set({
-        'name': user['username'],
-        'profilePicture': user['profilePicture'] ?? '',
-        'phoneNumber': user['phoneNumber'],
-        'upcomingEvents': 0,
+      final currentUserId = _authMethod.getUserId();
+
+      // Add the friend by their userId (uid)
+      await FirebaseFirestore.instance.collection('friends').add({
+        'userId': currentUserId,  // Store the current user's ID
+        'friendId': user['uid'],   // Now user['uid'] will exist
       });
     } catch (e) {
       print("Error adding friend to Firestore: $e");
     }
   }
+
 
   void addFriendFromContacts() async {
     PermissionStatus permissionStatus = await Permission.contacts.request();
@@ -241,23 +274,24 @@ class HomePageViewModel {
     );
   }
 
-
   Future<void> deleteFriend(Map<String, dynamic> friend) async {
-    final currentUser = FirebaseFirestore.instance.collection('users').doc(_authMethod.getUserId());
-    final querySnapshot = await currentUser.collection('friends')
-        .where('phoneNumber', isEqualTo: friend['phoneNumber'])
+    final currentUserId = _authMethod.getUserId();
+
+    // Delete the friend using their userId (uid)
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('friends')
+        .where('userId', isEqualTo: currentUserId)
+        .where('friendId', isEqualTo: friend['uid'])  // Use uid to identify the friend
         .get();
 
     if (querySnapshot.docs.isNotEmpty) {
-      await querySnapshot.docs.first.reference.delete();
+      await querySnapshot.docs.first.reference.delete();  // Delete the friend document
     }
   }
 
   void searchFriends(String query) {
     // To be implemented as per app requirements
   }
-
-
 
   void navigateToEventsPage() {
     Navigator.push(

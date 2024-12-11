@@ -87,13 +87,31 @@ class ProfileViewModel extends ChangeNotifier {
         name = updatedName;
         profilePicture = updatedProfilePicture;
 
+        // Also update the profile in the friend's collection for each friend
+        final friendsSnapshot = await _firestore
+            .collection('users')
+            .doc(user.uid)
+            .collection('friends')
+            .get();
+
+        for (var friendDoc in friendsSnapshot.docs) {
+          final friendId = friendDoc.id; // friend's UID
+          await _firestore.collection('users')
+              .doc(friendId)
+              .collection('friends')
+              .doc(user.uid)
+              .update({
+            'profilePicture': updatedProfilePicture,
+            'name': updatedName,
+          });
+        }
+
         notifyListeners(); // Notify listeners to update UI
       }
     } catch (e) {
       print("Error updating personal information: $e");
     }
   }
-
 
   Future<void> deleteAccount() async {
     try {
