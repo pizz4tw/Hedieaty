@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:hedeyety/viewmodels/profile_view_model.dart';
+import 'eventlist_page.dart';
 import 'update_info_page.dart';
 import 'home_page.dart';
 import 'login.dart'; // Import your login page here
@@ -49,8 +50,10 @@ class ProfilePage extends StatelessWidget {
               leading: Icon(Icons.event, color: Colors.black),
               title: Text('Events'),
               onTap: () {
-                Navigator.pop(context);
-                // Navigate to events page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => EventListPage()),
+                );
               },
             ),
             ListTile(

@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../services/authentication.dart';
+import '../views/eventlist_page.dart';
 import '../views/events_page.dart';
 import '../views/profile_page.dart';
 
@@ -296,7 +297,7 @@ class HomePageViewModel {
   void navigateToEventsPage() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => EventsPage()),
+      MaterialPageRoute(builder: (context) => EventListPage()),
     );
   }
 

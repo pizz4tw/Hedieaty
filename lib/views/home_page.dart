@@ -44,61 +44,73 @@ class _HomePageState extends State<HomePage> {
               onPressed: _viewModel.addFriendFromContacts,
               tooltip: 'Add from Contacts',
             ),
+
           ],
         ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Color.fromRGBO(134, 86, 210, 1.0),
-              ),
-              child: Text(
-                'Menu',
-                style: TextStyle(
-                  color: Color.fromRGBO(245, 198, 82, 1.0),
-                  fontSize: 24,
+        drawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              const DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Color.fromRGBO(134, 86, 210, 1.0),
+                ),
+                child: Text(
+                  'Menu',
+                  style: TextStyle(
+                    color: Color.fromRGBO(245, 198, 82, 1.0),
+                    fontSize: 24,
+                  ),
                 ),
               ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.home, color: Colors.black),
-              title: const Text('Home'),
-              onTap: () => Navigator.pop(context),
-            ),
-            ListTile(
-              leading: const Icon(Icons.event, color: Colors.black),
-              title: const Text('Events'),
-              onTap: () {
-                Navigator.pop(context);
-                _viewModel.navigateToEventsPage();
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.person, color: Colors.black),
-              title: const Text('Profile'),
-              onTap: () {
-                Navigator.pop(context);
-                _viewModel.navigateToProfile();
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.settings, color: Colors.black),
-              title: const Text('Settings'),
-              onTap: () {
-                Navigator.pop(context);
-                _viewModel.navigateToSettings();
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.exit_to_app, color: Colors.black),
-              title: const Text('Sign Out'),
-              onTap: _viewModel.signOut,
-            ),
-          ],
+              ListTile(
+                leading: const Icon(Icons.home, color: Colors.black),
+                title: const Text('Home'),
+                onTap: () => Navigator.pop(context),
+              ),
+              ListTile(
+                leading: const Icon(Icons.event, color: Colors.black),
+                title: const Text('Events'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _viewModel.navigateToEventsPage();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.add_box_sharp, color: Colors.black),  // Gift icon
+                title: const Text('Gift List'),  // Gift List menu option
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const GiftListPage()),  // Navigate to GiftListPage
+                  );
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.person, color: Colors.black),
+                title: const Text('Profile'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _viewModel.navigateToProfile();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.settings, color: Colors.black),
+                title: const Text('Settings'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _viewModel.navigateToSettings();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.exit_to_app, color: Colors.black),
+                title: const Text('Sign Out'),
+                onTap: _viewModel.signOut,
+              ),
+            ],
+          ),
         ),
-      ),
       body: Column(
         children: [
           Padding(
